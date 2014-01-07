@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from rango.models import Category, Page
+from rango.forms import CategoryForm
 
 def index(request):
     # Request the context of the request.
@@ -62,3 +63,17 @@ def category(request, category_name_url):
 
     # Go render the response and return it to the client.
     return render_to_response('rango/category.html', context_dict, context)
+
+def add_category(request):
+    context = RequestContext(request)
+    
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        
+        form.save(commit=True)
+        
+        return index(request)
+    else:
+        form = CategoryForm()
+        
+    return render_to_response('rango/add_category.html', {'form': form}, context)
